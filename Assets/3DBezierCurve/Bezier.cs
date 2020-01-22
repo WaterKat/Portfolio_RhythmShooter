@@ -102,12 +102,14 @@ public class Bezier : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        OnDrawGizmosSelected();
         for (int i = 0; i < NodeLength-1; i++)
         {
             BezierNode NodeA = GetClosestNode(i);
             BezierNode NodeB = GetClosestNode(i+1);
 
-            Handles.DrawBezier(NodeA.RootNode.position, NodeB.RootNode.position, NodeA.AfterNode.position, NodeB.BeforeNode.position, Color.red, null, 2f);
+           
+            Handles.DrawBezier(NodeA.RootNode.position, NodeB.RootNode.position, NodeA.AfterNode.position, NodeB.BeforeNode.position, Color.green, null, 2f);
         }
         
         if (UnityEditor.Selection.activeGameObject == gameObject) return;
@@ -130,22 +132,25 @@ public class Bezier : MonoBehaviour
         Gizmos.DrawSphere(StartNode.AfterNode.transform.position, 0.1f);
         Handles.Label(StartNode.AfterNode.transform.position + Vector3.up, "0_");
 
-
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(EndNode.BeforeNode.transform.position, 0.1f);
-        Handles.Label(EndNode.BeforeNode.transform.position + Vector3.up, "_"+(MidNodes.Count+1));
-
+        Gizmos.DrawLine(StartNode.RootNode.position, StartNode.AfterNode.position);
 
         Gizmos.color = Color.black;
         Gizmos.DrawSphere(EndNode.RootNode.transform.position, 0.25f);
         Handles.Label(EndNode.RootNode.transform.position + Vector3.up, (MidNodes.Count + 1).ToString());
 
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(EndNode.BeforeNode.transform.position, 0.1f);
+        Handles.Label(EndNode.BeforeNode.transform.position + Vector3.up, "_" + (MidNodes.Count + 1));
+
+        Gizmos.DrawLine(EndNode.RootNode.position, EndNode.BeforeNode.position);
 
         for (int i = 0; i < MidNodes.Count; i++)
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawSphere(MidNodes[i].BeforeNode.transform.position, 0.1f);
             Handles.Label(MidNodes[i].BeforeNode.transform.position + Vector3.up, "_" + (i + 1));
+
+            Gizmos.DrawLine(MidNodes[i].RootNode.transform.position, MidNodes[i].BeforeNode.transform.position);
 
 
             Gizmos.color = Color.Lerp(Color.white, Color.black, (float)(i + 1)/(MidNodes.Count+1) );
@@ -156,6 +161,9 @@ public class Bezier : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(MidNodes[i].AfterNode.transform.position, 0.1f);
             Handles.Label(MidNodes[i].AfterNode.transform.position + Vector3.up, (i + 1) + "_");
+
+            Gizmos.DrawLine(MidNodes[i].RootNode.transform.position, MidNodes[i].AfterNode.transform.position);
+
         }
     }
 }
